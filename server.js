@@ -16,28 +16,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Defining static file paths for HTML and JS files
-app.use(express.static(__dirname + '/app/public')); 
-app.use(express.static(__dirname + '/app/data'));
-app.use(express.static(__dirname + '/app/routing'));
+// app.use(express.static(__dirname + '/app/public')); 
+// app.use(express.static(__dirname + '/app/data'));
+// app.use(express.static(__dirname + '/app/routing'));
 
 // HTML ROUTES 
 // ==========================================
 
 // Two specific routings, one for the survey page and another for a 'catch-all', for re-direct all other unrecognizable routes back to the home pge.
 app.get("/survey", (req, res) => {
-  res.sendFile(path(__filename, "survey.html"));
+  res.sendFile(path.join(__dirname, "/app/public/survey.html"));
 });
 
-app.get("/*", (req, res) => {
-  res.sendFile(path(__filename, "home.html"));
-});
 
 // API ROUTES 
 // ==========================================
 
 // Displays all friends
 app.get("/api/friends", (req, res) => {
-  res.json(characters);
+  res.json(friends);
 });
 
 
@@ -61,11 +58,16 @@ app.post("/api/friends", (req, res) => {
   res.json(newFriend);
 });
 
+// catch-all for all unrecognizable routes
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/app/public/home.html"));
+});
+
 // router.route('/api/friends').get(apiRoutes.getFriends);
 // router.route('/api/friends').post(apiRoutes.postFriends);
 
 
 // Starts the express web server to begin listening
 app.listen(port, () => {
-    console.log("App listening on http://localhost/" + port);
+    console.log("App listening on http://localhost:" + port);
   });
