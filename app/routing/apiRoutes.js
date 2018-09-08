@@ -1,31 +1,44 @@
+// Dependencies
+const friends = require("../data/friends.js");
 
-// const friends = require("../data/friends");
-
-// module.exports = {
+module.exports = (app) => {
     
-//     // Object used to display a JSON of all possible friends
-//     getFriends : function(req, res) {
-//             res.json(friends);
-//             console.log(friends);
-//         },
+// Displays all friends
+app.get("/api/friends", (req, res) => {
+    res.json(friends);
+  });
+  
+  // Captures survey results
+  app.post("/api/friends", (req, res) => {
+    
+    // Stores the survey results into a 'newFriend' object
+    const newFriend = req.body;
+    
+    // Matches friends based on 
+    let matchName = "";
+    let matchImage = "";
+    let total = 10000;
+    for (let i = 0; i < friends.length; i++) {
+      let diff = 0;
+      
+      for (let check in newFriend.scores) {
+        let a = parseInt(friends[i].scores);
+        let b = parseInt(newFriend.scores[check]);
+        diff = Math.abs(a - b);
+      };
+      
+      if (diff < total){
+        total = diff;
+        matchName = friends[i].name;
+        matchImage = friends[i].photo;
+      }
+    };
 
-//     // Object used to post incoming survey results by creating a new friend object - takes in JSON input. Pushes to 'friends' array.
-//     postFriends : function(req, res) {
-//         // Create New Friends - takes in JSON input
-//         // req.body hosts is equal to the JSON post sent from the user
-//         // This works because of our body-parser middleware
-//         const newFriend = req.body;
+    // Pushing newFriend object into the Friends API
+    friends.push(newFriend);
   
-//         // Using a RegEx Pattern to remove spaces from newCharacter
-//         // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-//         newFriend.routeName = newFriend.name.replace(/\s+/g, "").toLowerCase();
-        
-//         // Testing to see how RegEx Pattern made an impact
-//         console.log(newFriend);
-        
-//         // Pushing new friend object into Friends array
-//         friends.push(newFriend);
-  
-//         res.json(newFriend);
-//     }
-// };
+    // Formating response as JSON
+    res.json(newFriend);
+  });
+
+};
